@@ -1,14 +1,14 @@
 
 `timescale 1ns / 1ps
 
-module 8X1_MUX_tb ();
+module Mux_8to1_tb ();
 
 reg I0,I1,I2,I3,I4,I5,I6,I7 ;
 reg [2:0] S ;
-wire reg Y ;
+wire Y ;
 
-#instantiation 
-8x1_Mux DUT ( .IO(IO) , .I1(I1) , .I2(I2) , .I3(I3) , .I4(I4) , .I5(I5) , .I6(I6) , .I7(I7) ) ;
+//instantiation 
+Mux_8to1 DUT ( .I0(I0) , .I1(I1) , .I2(I2) , .I3(I3) , .I4(I4) , .I5(I5) , .I6(I6) , .I7(I7) , .S(S) , .Y(Y) ) ;
 
 initial
 begin
@@ -23,7 +23,6 @@ I7 = 0;
 S = 0;
 end
 
-#150 ;
 
 initial 
 begin
@@ -37,7 +36,3 @@ I6 = 0;
 I7 = 1;
 S = 5;
 end
-
-#100 ;
-
-endmodule
