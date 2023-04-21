@@ -1,6 +1,6 @@
-module 8x1_Mux (I0,I1,I2,I3,I4,I5,I6,I7,S,Y) ;
+module Mux_8to1 (I0,I1,I2,I3,I4,I5,I6,I7,S,Y) ;
 
-input I0,I1,I2,I3,I4,I5,I6,I7 ;
+input I0 ,I1,I2,I3,I4,I5,I6,I7 ;
 input [2:0] S ;
 output reg Y ;
 
@@ -20,4 +20,3 @@ begin
 end
 
 endmodule
-
