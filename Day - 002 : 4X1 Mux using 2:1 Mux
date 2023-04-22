@@ -38,7 +38,7 @@ for ( i=0 ; i<64 ; i++)
 end
 
 initial 
-$monitor ( "I0 = %b , I1 = %b , I2 = %b , I3 =%b , S0 =%b , S1 =%b , Y =%b " ,I0 , I1 , I2 , I3 , S0 , S1 , Y)
+$monitor ( "I0 = %b , I1 = %b , I2 = %b , I3 =%b , S0 =%b , S1 =%b , Y =%b " ,I0 , I1 , I2 , I3 , S0 , S1 , Y) ;
 
 initial
 #100
