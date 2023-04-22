@@ -1,0 +1,47 @@
+
+// RTL mux 2X1 
+module mux_2to1 (I0 , I1 , S , Y ) ;
+input I0 , I1 , S ;
+output Y ;
+
+assign Y = S ? I0 : I1 ;
+
+endmodule // mux_2to1
+
+//RTL mux 4X1
+module mux_4to1 ( I0 , I1 , I2 , I3 , S0 , S1 , Y );
+input I0 , I1 , I2 , I3 , S0 , S1 ;
+output Y ;
+
+wire Y0 , Y1 ;
+
+mux_2to1 mux_1 ( .I0(I0) , .I1(I1) , .S(S0) , .Y(Y0) ) ;
+mux_2to1 mux_2 ( .I0(I2) , .I1(I3) , .S(S0) , .Y(Y1) ) ;
+mux_2to1 mux_3 ( .I0(Y0) , .I1(Y1) , .S(S1) , .Y(Y) ) ;
+
+endmodule // mux_4to1
+
+// Test Bench of mux 4to1
+module mux_4to1_tb ();
+reg I0 , I1 , I2 , I3 , S0 , S1 ;
+wire Y ;
+
+integer i ;
+
+mux_4to1 dut ( I0 , I1 , I2 , I3 , S0 , S1 , Y ) ; 
+
+initial 
+begin
+for ( i=0 ; i<64 ; i++)
+{I0 , I1 , I2 , I3 , S0 , S1 } = i ;
+#20 ;
+end
+
+initial 
+$monitor ( "I0 = %b , I1 = %b , I2 = %b , I3 =%b , S0 =%b , S1 =%b , Y =%b " ,I0 , I1 , I2 , I3 , S0 , S1 , Y)
+
+initial
+#100
+$finish ;
+
+endmodule // mux_4to1_tb
