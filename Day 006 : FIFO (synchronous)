@@ -1,0 +1,10 @@
+//RTL of synchronous FIFO
+
+module fifo ( clk , rst_n , w_en , r_en , din , dout , full , empty , wptr , rptr ) ;
+
+parameter DEPTH = 8 ;
+parameter DATA_WIDTH = 8 ;
+
+input clk , rst_n , w_en , r_en ;
+input [DATA_WIDTH -1 ] din ;
+output [DATA_WIDTH -1 ] dout ;
