@@ -1,10 +1,130 @@
 //RTL of synchronous FIFO
-
 module fifo ( clk , rst_n , w_en , r_en , din , dout , full , empty , wptr , rptr ) ;
 
 parameter DEPTH = 8 ;
 parameter DATA_WIDTH = 8 ;
 
 input clk , rst_n , w_en , r_en ;
-input [DATA_WIDTH -1 ] din ;
-output [DATA_WIDTH -1 ] dout ;
+input [(DATA_WIDTH -1):0 ] din ;
+output [(DATA_WIDTH -1):0 ] dout ;
+output full , empty ;
+
+reg [$clog2(DEPTH-1):0] wptr , rptr ;
+reg [(DATA_WIDTH -1):0] FIFO [DEPTH] ;
+
+//set default values for reset
+always @ (posedge clk)
+begin
+if(!rst_n)
+begin
+wptr <= 0;
+rptr <= 0;
+dout <= 0;
+end
+end
+
+//write data to fifo
+always @ (posedge clk) 
+begin
+if ( w_en & !full )
+begin
+FIFO[wptr] <= din ;
+wptr = wptr +1;
+end
+end
+
+//read data from fifo
+always @ (posedge clk)
+begin
+if ( r_en & !empty )
+begin
+dout <= FIFO[rptr] ;
+rptr = rptr + 1;
+end
+end
+
+//for full and empty condition
+assign full = ( (wptr + 1'b1) == rptr );
+assign empty = ( wptr == rptr );
+
+endmodule
+
+
+//TestBench for FIFO
+module fifo_tb ();
+reg clk , rst_n , w_en , r_en ;
+reg [7:0 ] din ;
+wire [7:0 ] dout ;
+wire full , empty ;
+
+integer i;
+
+fifo dut  ( .clk(clk) , .rst_n(rst_n) , .w_en(w_en) , .r_en(r_en) , .din(din) , .dout(dout) , .full(full) , .empty(empty) ) ;
+
+always #2 clk = ~clk ; 
+
+task rst_input ();
+begin
+@ ( negedge clk)
+rst_n = 1'b1 ;
+@ ( negedge clk )
+rst_n = 1'b0 ;
+end
+
+task init();
+begin
+rst_n = 1'b1 ;
+clk = 1'b0 ;
+din = 1'b0 ;
+end
+
+task renable ();
+begin
+w_en = 1'b0;
+r_en = 1'b1;
+end
+
+task wenable ();
+begin
+w_en = 1'b1;
+r_en = 1'b0;
+end
+
+task input ();
+for (i=0 ; i<64 ; i++)
+begin
+if (i <32)
+begin
+din = i;
+wptr = i;
+end
+else
+begin
+din = i +1 ;
+rptr = i +1 ;
+end
+end
+
+//call
+initial
+begin
+rst_input;
+init;
+renable;
+input;
+end
+
+initial
+begin
+rst_input;
+init;
+wenable;
+input;
+end
+
+
+initial
+begin
+#5000; $finish;
+end
+		
