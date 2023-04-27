@@ -1,0 +1,48 @@
+//RTL for asynchronous counter
+
+module async_count (clk , clear , q ) ;
+input clk , clear ;
+output reg [3:0] q ;
+
+always @ ( negedge clk or posedge clear )
+begin
+q[0] <= ~q[0] ;
+end
+always @(negedge q[0] or posedge clear)
+begin
+q[1]<=~q[1];
+end
+always @(negedge q[1] or posedge clear)
+begin
+q[2]<=~q[2];
+end
+always @(negedge q[2] or posedge clear)
+begin
+if(clear)
+q <=4’b0000;
+else
+q[3]<=~q[3];
+end
+
+endmodule //async_count
+
+module async_count_tb();
+
+reg clk;
+reg clear;
+wire [3:0] q;
+
+async_coun uut (.clk(clk),.clear(clear),.q(q) );
+
+initial begin
+clk = 0;
+clear = 0;
+#5 clear=1’b1;
+#5 clear=1’b0;
+end
+
+always #5 clk=~clk;
+
+initial #200 $stop;
+
+endmodule
