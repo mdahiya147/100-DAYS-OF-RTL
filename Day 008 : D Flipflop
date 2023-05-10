@@ -1,0 +1,79 @@
+// RTL for D flipflop 
+module d_ff (clk , rst , din , q , qbar) ;
+  input clk, rst, din ;
+  output reg q ;
+  output qbar ;
+  
+  always @ (posedge clk)
+    begin
+    if(rst)
+        q <= 0;
+      else
+        q <= din ;
+    end
+  
+ assign qbar = ~q ;
+  
+endmodule
+//------------------------------------------------------------------------------
+
+//Testbench 
+module d_ff_tb ();
+  reg clk,rst,din ;
+  wire q , qbar ;
+
+parameter cycle =10 ;
+integer i;
+  
+d_ff dut (.clk(clk) , .rst(rst) , .din(din) , .q(q) , .qbar(qbar) ); 
+  
+//clk generation
+  always
+    begin
+      #(cycle /2)
+      clk = 0;
+      #(cycle /2)
+      clk = 1;
+    end
+  
+  task rst_tb ();
+     begin
+	 @(negedge clk);
+	 rst= 1;
+	 @(negedge clk);
+	 rst = 0;
+      end
+   endtask
+  
+  task input_tb (input i);
+    begin
+      @ (negedge clk)
+    din = i;  
+    end
+  endtask
+    
+ //calling tasks
+    initial 
+      begin
+        rst_tb;
+        input_tb(0);
+         input_tb(1);
+         input_tb(0);
+         input_tb(1);
+        input_tb(1);
+         rst_tb;
+        input_tb(0);
+         input_tb(1);
+      end
+  
+  initial
+    $monitor("din=%d, q=%d, qbar= %d ",din, q, qbar);
+
+  initial begin
+  $dumpfile("dump.vcd");
+  $dumpvars;
+     #10000 
+  $finish;
+end
+
+endmodule
